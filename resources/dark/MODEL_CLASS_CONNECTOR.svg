@@ -1,0 +1,15 @@
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Transformed by: SVG Repo Mixer Tools -->
+<svg fill="#ffffff" width="195px" height="195px" viewBox="0 0 24.00 24.00" id="cross-arrow" data-name="Line Color" xmlns="http://www.w3.org/2000/svg" class="icon line-color" transform="matrix(-1, 0, 0, 1, 0, 0)rotate(45)" stroke="#ffffff">
+<g id="SVGRepo_bgCarrier" stroke-width="0" transform="translate(2.76,2.76), scale(0.77)">
+<rect x="0" y="0" width="24.00" height="24.00" rx="12" fill="#0000" strokewidth="0"/>
+</g>
+<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
+<g id="SVGRepo_iconCarrier">
+<path id="primary" d="M12,21V3M3,12H21" style="fill: none; stroke: #2ca9bc; stroke-linecap: round; stroke-linejoin: round; stroke-width:2.208;"/>
+<polyline id="secondary" points="6 9 3 12 6 15" style="fill: none; stroke: #2ca9bc; stroke-linecap: round; stroke-linejoin: round; stroke-width:2.208;"/>
+<polyline id="secondary-2" data-name="secondary" points="15 6 12 3 9 6" style="fill: none; stroke: #2ca9bc; stroke-linecap: round; stroke-linejoin: round; stroke-width:2.208;"/>
+<polyline id="secondary-3" data-name="secondary" points="18 15 21 12 18 9" style="fill: none; stroke: #2ca9bc; stroke-linecap: round; stroke-linejoin: round; stroke-width:2.208;"/>
+<polyline id="secondary-4" data-name="secondary" points="9 18 12 21 15 18" style="fill: none; stroke: #2ca9bc; stroke-linecap: round; stroke-linejoin: round; stroke-width:2.208;"/>
+</g>
+</svg>

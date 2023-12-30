@@ -1,0 +1,224 @@
+{
+	"name": "inmation-dev-tool",
+	"displayName": "Inmation IO",
+	"description": "View Inmation IO Model",
+	"version": "0.0.1",
+	"publisher": "MS",
+	"repository": {
+		"type": "git"
+	},
+	"private": true,
+	"license": "MIT",
+	"engines": {
+		"vscode": "^1.74.0"
+	},
+	"extensionKind": [
+		"ui",
+		"workspace"
+	],
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"workspaceContains:filePattern('*inmation-compose.json')"
+
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "Main",
+					"title": "Inmation Io",
+					"icon": "media/io.svg"
+				},
+				{
+					"id": "Compose",
+					"title": "Compose",
+					"icon": "media/io.svg"
+				}
+			]
+		},
+		"views": {
+			"explorer": [
+				{
+					"type": "tree",
+					"id": "ScriptLibrary",
+					"name": "Script Libary"
+				}
+			],
+			"Main": [
+				{
+					"id": "Main:Io.View",
+					"name": "IO Model",
+					"icon": "media/io.svg",
+					"contextualTitle": "Main:System IO Model"
+				},
+				{
+					"id": "Main:Props.View",
+					"name": "Object Properites",
+					"icon": "media/io.svg",
+					"type": "tree",
+					"contextualTitle": "object Properites"
+				}
+			],
+	
+			"Compose": [
+				{
+					"id": "Compose:Action.View",
+					"name": "inmation compose actions",
+					"icon": "media/io.svg",
+					"contextualTitle": "Compose"
+				}
+			]
+		},
+		"commands": [
+
+			{
+				"command": "Compose:Action.View.RunAction",
+				"title": "Run",
+				"icon": {
+					"light": "resources/light/run-action.svg",
+					"dark": "resources/dark/run-action.svg"
+				}
+			},
+			{
+				"command": "Compose:Action.View.RenderModel",
+				"title": "Render",
+				"icon": {
+					"light": "resources/light/render-model.svg",
+					"dark": "resources/dark/render-model.svg"
+				}
+
+			},
+			{
+				"command": "Compose:Action.View.OpenFile",
+				"title": "Open",
+				"icon": {
+					"light": "resources/light/open-file.svg",
+					"dark": "resources/dark/open-file.svg"
+				}
+			},
+			{
+				"command": "Main:Io.View.Refresh",
+				"title": "Refresh IO Model",
+				"icon": {
+					"light": "resources/light/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
+				}
+			},
+			{
+				"command": "Main:Io.View.Settings",
+				"title": "settings",
+				"icon": {
+					"light": "resources/light/settings.svg",
+					"dark": "resources/dark/settings.svg"
+				}
+			},
+			{
+				"command": "Main:Io.View.AddObject",
+				"title": "Add",
+				"icon": {
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
+				}
+			},
+			{
+				"command": "Main:Io.View.DeleteObject",
+				"title": "Delete",
+				"icon": {
+					"light": "resources/light/delete.svg",
+					"dark": "resources/dark/delete.svg"
+				}
+			},
+			{
+				"command": "Main:Io.View.ShowObject",
+				"title": "Show",
+				"icon": {
+					"light": "resources/light/boolean.svg",
+					"dark": "resources/dark/boolean.svg"
+				}
+			},
+			{
+				"command": "Main:Io.View.Object.Props.Show",
+				"title": "Show"
+
+			}
+			
+		],
+		"menus": {
+			"view/title": [
+		
+				{
+					"command": "Main:Io.View.Refresh",
+					"when": "view == Main:Io.View",
+					"group": "navigation"
+				},
+				{
+					"command": "Main:Io.View.Settings",
+					"when": "view == Main:Io.View",
+					"group": "navigation"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "Compose:Action.View.RenderModel",
+					"when": "viewItem == Compose:Actions.View.Mass",
+					"group": "inline"
+				},
+				{
+					"command": "Compose:Action.View.RunAction",
+					"when":"viewItem == Compose:Actions.View.Mass || viewItem == Compose:Actions.View.ExecFunction || viewItem == Compose:Actions.View.Flow",
+					"group": "inline"
+				},
+	
+				{
+					"command": "Main:Io.View.AddObject",
+					"when": "view == Main:Io.View",
+					"group": "inline"
+				},
+				{
+					"command": "Main:Io.View.DeleteObject",
+					"when": "view == Main:Io.View",
+					"group": "inline"
+				},
+				{
+					"command": "Main:Io.View.ShowObject",
+					"when": "view == Main:Io.View",
+					"group": "inline"
+				}
+				
+			]
+		},
+		"configuration": []
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"lint": "eslint \"src/**/*.ts\""
+	},
+	"devDependencies": {
+		"@types/express": "^4.17.21",
+		"@types/ftp": "^0.3.33",
+		"@types/mkdirp": "^0.5.2",
+		"@types/node": "^16.18.34",
+		"@types/rimraf": "^2.0.2",
+		"@types/vscode": "^1.73.0",
+		"@typescript-eslint/eslint-plugin": "^6.7.0",
+		"@typescript-eslint/parser": "^6.7.0",
+		"eslint": "^8.26.0",
+		"typescript": "^5.3.2"
+	},
+	"dependencies": {
+		"@inmation/inmation-api-client": "^1.9.1",
+		"@inmation/inmation-compose-cli": "^0.2.4",
+		"axios": "^1.6.2",
+		"express": "^4.18.2",
+		"ftp": "^0.3.10",
+		"jsonc-parser": "^0.4.2",
+		"minimist": "^1.2.6",
+		"mkdirp": "^0.5.1",
+		"rimraf": "^2.6.2"
+	}
+}
