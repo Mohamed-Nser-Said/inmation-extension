@@ -4,76 +4,82 @@ import { Task } from "./Task";
 import { OutputChannel } from "./OutputChannel";
 import { InputChannel } from "./InputChannel";
 import * as vscode from 'vscode';
-import { MassAction } from "../Models/ComposeActions";
-
-// create the inmation object
+import { NotebookClient } from "./NotebookClient";
 
 
-// define the user commands
 
+class Inmation {
 
-const oc = new OutputChannel();
-const ic = new InputChannel();
-const inmation = new InmationObject(oc, ic);
-const task = new Task(inmation);
+	private static object: InmationObject;
+	private static task: Task;
+	private static notebook: NotebookClient;
+	public dev: boolean = true;
 
-vscode.commands.registerCommand("Inmation.Disconnect", async () => {
-	inmation.disconnect();
-});
+	constructor() {
 
-vscode.commands.registerCommand("Inmation.Connect", async () => {
-	inmation.selectConnection();
-});
+		const oc = new OutputChannel();
+		const ic = new InputChannel();
+		Inmation.object = new InmationObject(oc, ic);
+		Inmation.notebook = new NotebookClient(Inmation.object.webapi);
 
-// create status bar items
-const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-statusBarItem.text = "$(plug) Inmation";
-statusBarItem.command = "Inmation.Connect";
-statusBarItem.show();
-
-
-// listen to connection changes
-
-inmation.onConnectionChanged((connectionInfo: any) => {
-	statusBarItem.color = (connectionInfo.state === 4 && connectionInfo.authenticated) ? "lightgreen" : statusBarItem.color = "yellow";
-	statusBarItem.tooltip = `${inmation.connection?.name}: ${connectionInfo.stateString} ${connectionInfo.authenticated ? " and Authenticated" : ""}`;
-});
-
-
-export namespace Inmation {
-
-
-	export function Object() {
-		return inmation;
-	}
-
-	export namespace Task {
-		export async function deleteObject(item: any) {
-			return await task.deleteObject(item);
-		}
-		export async function addObject(parentPath: string, objName: string, objClass: string) {
-			return await task.addObject(parentPath, objName, objClass);
-		}
-		export async function getFullIoTree() {
-			return await task.getFullIoTree();
-		}
-		export async function getScriptLibray(item: any) {
-			return await task.getScriptLibray(item);
+		if (this.dev) {
+			const connection = Inmation.object.compose.connectionByName("docker WEBAPI-TAK");
+			Inmation.object.connect(connection);
 		}
 
-
-
+		else {
+			Inmation.object.selectConnection();
+		}
 		
+
+		vscode.commands.registerCommand("Inmation.Disconnect", async () => Inmation.object.disconnect()
+		);
+
+		vscode.commands.registerCommand("Inmation.Connect", async () => {
+			Inmation.object.selectConnection();
+		});
+
+		// create status bar items
+		const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+		statusBarItem.text = "$(plug) Inmation";
+		statusBarItem.command = "Inmation.Connect";
+		statusBarItem.show();
+
+
+		// listen to connection changes
+
+		Inmation.object.onConnectionChanged((connectionInfo: any) => {
+			statusBarItem.color = (connectionInfo.state === 4 && connectionInfo.authenticated) ? "lightgreen" : statusBarItem.color = "yellow";
+			statusBarItem.tooltip = `${Inmation.object.connection?.name}: ${connectionInfo.stateString} ${connectionInfo.authenticated ? " and Authenticated" : ""}`;
+		});
+
+		// ask for connection on startup
+		// then create a notebook client
+
+		Inmation.task = new Task(Inmation.object);
+
+
 	}
 
+	get Object() {
+		return Inmation.object;
+	}
+
+	get Task() {
+		return Inmation.task;
+	}
+
+	get notebook() {
+
+		return Inmation.notebook;
 
 
-
-
-
-
-
-
+	}
 
 
 }
+
+
+
+const inmation = new Inmation();
+export default inmation;

@@ -7,7 +7,6 @@ export class OutputChannel {
 	public logEverything: boolean = false;
 	
 	constructor(logEverything: boolean = false) {
-	
 		this.logEverything = logEverything;
 	}
 
@@ -25,7 +24,6 @@ export class OutputChannel {
 
 	public log(message: any) {
 		this.outputchannel.appendLine(message);
-		this.outputchannel.show();
 
 	}
 

@@ -1,16 +1,16 @@
 
 import {Connection} from "./Connection";
 import ScriptReference from "../types/ScriptReference";
-import { IComposeAction } from "./ComposeActions";
+import { ComposeAction, ExecFuncAction, FlowAction, MassAction } from "./ComposeActions";
 
 export default  class Compose {
 
 	version: string;
 	connections: Connection[];
 	scriptReferences: ScriptReference[];
-	actions: IComposeAction[];
+	actions: ComposeAction [];
 
-	constructor(version: string, connections: Connection[], scriptReferences: ScriptReference[], actions: IComposeAction[]) {
+	constructor(version: string, connections: Connection[], scriptReferences: ScriptReference[], actions: ComposeAction []) {
 		this.version = version;
 		this.connections = connections.map(connection => new Connection(connection.name, connection.hostname, connection.port, connection.usr, connection.pwd));
 		this.scriptReferences = scriptReferences.map(scriptReference => new ScriptReference(scriptReference.namespace, scriptReference.folderPath));
@@ -25,8 +25,8 @@ export default  class Compose {
 		return this.connections.find(connection => connection.name === name) || Connection.Default();
 	}
 
-	public groupActionByType(): Map<string, IComposeAction[]> {
-		const groupedActions = new Map<string, IComposeAction[]>();
+	public groupActionByType(): Map<string, ComposeAction[]> {
+		const groupedActions = new Map<string, ComposeAction[]>();
 		this.actions.forEach(action => {
 			const type = action.type;
 			const actions = groupedActions.get(type) || [];
@@ -36,8 +36,8 @@ export default  class Compose {
 		return groupedActions;
 	}
 
-	public getActionByName(name: string): IComposeAction | undefined {
-		return this.actions.find(action => action.name === name);
+	public getActionByName(name: string): ComposeAction| undefined {
+		return this.actions.find((action :ComposeAction) => action.name === name);
 	}
 
 	static FromJson(json: string): Compose {

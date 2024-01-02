@@ -25,6 +25,17 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"notebooks": [
+            {
+                "type": "inmation-lua-notebook",
+                "displayName": "Inmation Notebook",
+                "selector": [
+                    {
+                        "filenamePattern": "*.nb.lua"
+                    }
+                ]
+            }
+        ],
 		"viewsContainers": {
 			"activitybar": [
 				{
@@ -43,8 +54,9 @@
 			"explorer": [
 				{
 					"type": "tree",
-					"id": "ScriptLibrary",
-					"name": "Script Libary"
+					"id": "explorer:ScriptLibrary.View",
+					"name": "Script Libary",
+					"contextualTitle": "scripts libary"
 				}
 			],
 			"Main": [
@@ -73,6 +85,38 @@
 			]
 		},
 		"commands": [
+			{
+				"command": "explorer:ScriptLibrary.View.Refresh",
+				"title": "Refresh IO Model",
+				"icon": {
+					"light": "resources/light/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
+				}
+			},
+			{
+				"command": "explorer:ScriptLibrary.View.ScriptLibrary.New",
+				"title": "NewScript",
+				"icon": {
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
+				}
+			},
+			{
+				"command": "explorer:ScriptLibrary.View.Script.Edit",
+				"title": "Edit Script",
+				"icon": {
+					"light": "resources/light/edit.svg",
+					"dark": "resources/dark/edit.svg"
+				}
+			},
+			{
+				"command": "explorer:ScriptLibrary.View.Script.Delete",
+				"title": "Delete Script",
+				"icon": {
+					"light": "resources/light/delete.svg",
+					"dark": "resources/dark/delete.svg"
+				}
+			},
 
 			{
 				"command": "Compose:Action.View.RunAction",
@@ -92,13 +136,14 @@
 
 			},
 			{
-				"command": "Compose:Action.View.OpenFile",
-				"title": "Open",
+				"command": "Compose:Action.View.FavoriteAction",
+				"title": "Favorite",
 				"icon": {
-					"light": "resources/light/open-file.svg",
-					"dark": "resources/dark/open-file.svg"
+					"light": "resources/light/favorite-action.svg",
+					"dark": "resources/dark/favorite-action.svg"
 				}
 			},
+
 			{
 				"command": "Main:Io.View.Refresh",
 				"title": "Refresh IO Model",
@@ -148,6 +193,11 @@
 		],
 		"menus": {
 			"view/title": [
+				{
+					"command": "explorer:ScriptLibrary.View.Refresh",
+					"when": "view == explorer:ScriptLibrary.View",
+					"group": "navigation"
+				},
 		
 				{
 					"command": "Main:Io.View.Refresh",
@@ -162,6 +212,21 @@
 			],
 			"view/item/context": [
 				{
+					"command": "explorer:ScriptLibrary.View.ScriptLibrary.New",
+					"when": "viewItem == explorer:ScriptLibrary.View.ScriptLibrary",
+					"group": "inline"
+				},
+				{
+					"command": "explorer:ScriptLibrary.View.Script.Edit",
+					"when": "viewItem == explorer:ScriptLibrary.View.Script",
+					"group": "inline"
+				},
+				{
+					"command": "explorer:ScriptLibrary.View.Script.Delete",
+					"when": "viewItem == explorer:ScriptLibrary.View.Script",
+					"group": "inline"
+				},
+				{
 					"command": "Compose:Action.View.RenderModel",
 					"when": "viewItem == Compose:Actions.View.Mass",
 					"group": "inline"
@@ -169,6 +234,16 @@
 				{
 					"command": "Compose:Action.View.RunAction",
 					"when":"viewItem == Compose:Actions.View.Mass || viewItem == Compose:Actions.View.ExecFunction || viewItem == Compose:Actions.View.Flow",
+					"group": "inline"
+				},
+				{
+					"command": "Compose:Action.View.FavoriteAction",
+					"when": "viewItem == Compose:Actions.View.Mass || viewItem == Compose:Actions.View.ExecFunction || viewItem == Compose:Actions.View.Flow",
+					"group": "inline"
+				},
+				{
+					"command": "Main:Io.View.Object.Props.Show",
+					"when": "viewItem == Main:Io.View.Object.Props",
 					"group": "inline"
 				},
 	
@@ -188,6 +263,17 @@
 					"group": "inline"
 				}
 				
+			],
+			"editor/title": [
+				{
+					"command": "Main:Io.View.Refresh",
+					"when": "editorLangId == a",
+					"group": "navigation"
+				},
+				{
+					"command": "Main:Io.View.Settings",
+					"group": "navigation"
+				}
 			]
 		},
 		"configuration": []

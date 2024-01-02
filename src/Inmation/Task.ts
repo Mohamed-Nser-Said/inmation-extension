@@ -81,10 +81,56 @@ export class Task {
 	}
 
 
-	async getScriptLibray(item: any): Promise<string[]> {
-		console.log(item.path);
+	async getScriptLibray(): Promise<any> {
+		console.log("getScriptLibray");
 
-		const lua = `return syslib.getvalue("${item.path}.ScriptLibrary.LuaModuleName")`;
+		const lua =`
+		
+local scriptLib = {}
+local function getChildren(path)
+			local obj = syslib.getobject(path)
+			local children = obj:children()
+			local  ok, value = pcall(function  () return syslib.getvalue(obj:path()) end)
+		
+			if ok == false then 
+				value = nil
+			end
+		
+			local path = obj:path()
+			local label = string.match(path, "[^/]+$")
+			
+			local result = {
+					label = label,
+					type = obj:type(),
+					path = path,
+					value = value,
+					children = {},
+				}
+				
+			local ok , scriptLibrary = pcall(function () return syslib.getvalue(path ..".ScriptLibrary.LuaModuleName")end )
+			if ok ==true then table.insert(scriptLib,{label = label,scriptLibrary =scriptLibrary, path=path }) end
+				
+		
+			
+			if children == nil then
+				return result
+			else 
+		
+			for _,c in pairs(children) do
+				table.insert(result.children, getChildren(c:path()) )
+				
+			end
+				return result
+			end
+			
+		
+		end
+		
+		local json = require("dkjson")
+		local result = getChildren("/System")
+return json.encode(scriptLib);
+
+`;
 
 		return await this.inmation.runScript("/System", lua);
 	}

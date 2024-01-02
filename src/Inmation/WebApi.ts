@@ -16,15 +16,6 @@ export default class WebApi  {
 
 	constructor() {
 
-	
-		this._client.onDataChanged((err:any, items:any) => {
-			if (err) console.log(err.message);
-			for (const item of items) {
-				console.log(`Path: ${item.p} value: ${item.v}`);
-			}
-		});
-
-
 		
 
 	}

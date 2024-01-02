@@ -10,17 +10,9 @@ import ScriptReference from '../types/ScriptReference';
 import * as vscode from 'vscode';
 
 
+export type ComposeAction = MassAction& FlowAction&ExecFuncAction;
 
-export interface IComposeAction {
-	name: string;
-	type: string;
-	comment: string|null;
-
-}
-
-
-
-export class MassAction extends vscode.TreeItem implements IComposeAction{
+export class MassAction extends vscode.TreeItem {
 
 	readonly name: string;
 	readonly type: string;
@@ -74,7 +66,7 @@ export class MassAction extends vscode.TreeItem implements IComposeAction{
 
 
 
-export class ExecFuncAction extends vscode.TreeItem implements IComposeAction{
+export class ExecFuncAction extends vscode.TreeItem {
 	
 	readonly name: string;
 	readonly type: string;
@@ -116,7 +108,7 @@ export class ExecFuncAction extends vscode.TreeItem implements IComposeAction{
 
 
 
-export class FlowAction  extends vscode.TreeItem implements IComposeAction{
+export class FlowAction  extends vscode.TreeItem {
 	
 	readonly name: string;
 	readonly type: string;
@@ -142,4 +134,35 @@ export class FlowAction  extends vscode.TreeItem implements IComposeAction{
 }
 
 
+export namespace Action {
 
+	export namespace Result {
+
+
+		export type Item = {
+			p: string;
+			n: string;
+		};
+		
+		export type Stats = {
+			success: number;
+			failure: number;
+			total: number;
+		};
+		
+		
+		export class MassActionResult {
+		
+			public readonly items: Array<Item>;
+			public readonly stats: Stats;
+		
+			constructor(items: Array<Item>, stats: Stats) {
+				this.items = items;
+				this.stats = stats;
+			}
+		}
+		
+		
+	}
+
+}

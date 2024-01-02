@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as p from 'path';
-import { Inmation } from '../Inmation/Inmation';
-import { it } from 'node:test';
+import  Inmation  from '../Inmation/Inmation';
+
 
 export namespace Io {
 
@@ -47,13 +47,8 @@ export namespace Io {
 		constructor() {
 
 
-
-			setTimeout(async () => {
-				if (!Inmation.Object().isReady) return;
-				this.refresh();
-				this.refreshFunction = setInterval(async () => this.refresh(), this.refreshRate);
-
-			}, 1500);
+			setTimeout(async () => Inmation.Object.isReady && this.refresh() , 1500);
+			this.refreshFunction = setInterval(async () =>Inmation.Object.isReady && this.refresh(), this.refreshRate);
 		}
 
 
@@ -63,7 +58,7 @@ export namespace Io {
 			clearInterval(this.refreshFunction);
 
 			if (this.refreshRate == -1) return;
-			this.refreshFunction = setInterval(async () => this.refresh(), this.refreshRate);
+			this.refreshFunction = setInterval(async () =>Inmation.Object.isReady && this.refresh(), this.refreshRate);
 		}
 
 		async refresh(): Promise<void> {
@@ -80,7 +75,7 @@ export namespace Io {
 
 		public async showObject(item: any): Promise<any> {
 
-			const scriptLibray = await Inmation.Task.getScriptLibray(item);
+			const scriptLibray = await Inmation.Task.getScriptLibray();
 			vscode.window.showInformationMessage(scriptLibray?.join(', '));
 			this.refresh();
 
