@@ -1,6 +1,6 @@
 
 import {Connection} from "./Connection";
-import ScriptReference from "../types/ScriptReference";
+import ScriptReference from "./ScriptReference";
 import { ComposeAction, ExecFuncAction, FlowAction, MassAction } from "./ComposeActions";
 
 export default  class Compose {

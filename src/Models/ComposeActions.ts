@@ -6,8 +6,10 @@ const ScriptLibraryManager = require('@inmation/inmation-compose-cli/lib/script-
 const MappingManager = require('@inmation/inmation-compose-cli/lib/mapping-manager').MappingManager;
 const ModelConfigManager = require('@inmation/inmation-compose-cli/lib/model-config-manager').ModelConfigManager;
 import path = require('path');
-import ScriptReference from '../types/ScriptReference';
+import ScriptReference from './ScriptReference';
 import * as vscode from 'vscode';
+import { InmationObject } from '../Inmation/InmationObject';
+import inmation from '../Inmation/Inmation';
 
 
 export type ComposeAction = MassAction& FlowAction&ExecFuncAction;
@@ -16,11 +18,11 @@ export class MassAction extends vscode.TreeItem {
 
 	readonly name: string;
 	readonly type: string;
-	public model: string;
+	public model: string|object;
 	public comment: string|null;
 	public mapping: string|null = null;
 
-	constructor(name: string, type: string, model: string, comment: string|null) {
+	constructor(name: string, type: string, model: string|object, comment: string|null) {
 		super(name, vscode.TreeItemCollapsibleState.None);
 		this.iconPath = {
 			light: path.join(__filename, '..', '..', '..', 'resources', 'light', `mass.svg`),
@@ -45,7 +47,9 @@ export class MassAction extends vscode.TreeItem {
 
 	async readModelConfigFolder(scriptReferences: ScriptReference[]) : Promise<any> {
 
-		const workspaceFolderPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath|| '';
+		if (typeof (this.model) === 'object') return this.model;
+		const workspaceFolderPath = inmation.Object.compose.workspacePath;
+
 		let mappingManager = null;
 		if (typeof (this.mapping) === 'string') {
 			const mappingFilename = path.resolve(workspaceFolderPath, this.mapping);

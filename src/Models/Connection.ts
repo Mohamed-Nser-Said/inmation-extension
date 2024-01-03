@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { Options } from "../types/Options";
+import { Options } from "./Options";
 import path = require("path");
 
 

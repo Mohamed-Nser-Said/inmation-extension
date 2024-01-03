@@ -1,3 +1,4 @@
+import { AdvancedLuaScript } from "../Models/AdvancedLuaScript";
 import { MassAction } from "../Models/ComposeActions";
 import { InmationObject } from "./InmationObject";
 
@@ -84,7 +85,7 @@ export class Task {
 	async getScriptLibray(): Promise<any> {
 		console.log("getScriptLibray");
 
-		const lua =`
+		const lua = `
 		
 local scriptLib = {}
 local function getChildren(path)
@@ -134,6 +135,132 @@ return json.encode(scriptLib);
 
 		return await this.inmation.runScript("/System", lua);
 	}
+
+
+	async loadAdvancedLuaScript(item: AdvancedLuaScript): Promise<AdvancedLuaScript> {
+		console.log("getAdvancedLuaScript");
+
+		const lua = ` 
+		local scriptName = [[${item.name}]]
+		local path = [[${item.path}]]
+	   	local libName =  syslib.get(path ..".ScriptLibrary.LuaModuleName")
+	   	local scripts = syslib.getvalue(path .. ".ScriptLibrary.AdvancedLuaScript")
+	   
+	   	local newLibName = {}
+	   	local newScrips = {}
+	   	for k, v in ipairs(libName) do 
+			   if v == scriptName then
+				   return scripts[k]
+			   end
+	   	end
+	   
+	   	return "-- empty"
+	   
+	   `;
+
+		return { path: item.path, name: item.name, scriptBody: await this.inmation.runScript("/System", lua) };
+	}
+
+
+	public async updateAdvancedLuaScript(path: string, scriptName: string, script: string): Promise<any> {
+		console.log("updateAdvancedLuaScript");
+
+		const lua = ` 
+		local scriptName = [[${scriptName}]]
+		local path = [[${path}]]
+	   	local libName =  syslib.getvalue(path ..".ScriptLibrary.LuaModuleName")
+	   	local scripts = syslib.getvalue(path .. ".ScriptLibrary.AdvancedLuaScript")
+	
+	   	for k, v in ipairs(libName) do 
+			   if v == scriptName then
+				   scripts[k] = [[${script}]]
+			   end
+	   	end
+	   
+	   	syslib.set(path .. ".ScriptLibrary.AdvancedLuaScript",scripts )
+	   `;
+
+		console.log(lua);
+		return await this.inmation.runScript("/System", lua);
+	}
+
+	public async updateScriptLibraryName(path: string, oldName: string, newName: string): Promise<any> {
+		console.log("updateScriptLibraryName");
+
+		const lua = ` 
+		local path = [[${path}]]
+	   	local libName =  syslib.getvalue(path ..".ScriptLibrary.LuaModuleName")
+	   	local scripts = syslib.getvalue(path .. ".ScriptLibrary.AdvancedLuaScript")
+	
+	   	for k, v in ipairs(libName) do 
+			   if v == [[${oldName}]] then
+				   libName[k] = [[${newName}]]
+			   end
+	   	end
+	   
+	   	syslib.set(path .. ".ScriptLibrary.LuaModuleName",libName )
+	   `;
+
+		return await this.inmation.runScript("/System", lua);
+	}
+
+
+	public async deleteAdvancedLuaScript(items: AdvancedLuaScript[] | AdvancedLuaScript): Promise<void> {
+
+		const deleteOnce = async (item: AdvancedLuaScript) => {
+			return ` 
+			local scriptName = [[${item.name}]]
+			local path = [[${item.path}]]
+			local libName =  syslib.getvalue(path ..".ScriptLibrary.LuaModuleName")
+			local scripts = syslib.getvalue(path .. ".ScriptLibrary.AdvancedLuaScript")
+		
+			local newLibName = {}
+			local newScrips = {}
+			for k, v in ipairs(libName) do 
+				   if v ~= scriptName then
+					   table.insert(newLibName,v)
+					   table.insert(newScrips,scripts[k])
+				   end
+			end
+		
+			syslib.set(path .. ".ScriptLibrary.LuaModuleName",newLibName )
+			syslib.set(path .. ".ScriptLibrary.AdvancedLuaScript",newScrips )
+		   `;
+		};
+
+		const deleteMany = async (items: AdvancedLuaScript[]) => {
+			let lua = "";
+			for (const item of items) {
+				lua += await deleteOnce(item);
+			}
+			return lua;
+		};
+
+		const lua = await deleteMany(Array.isArray(items) ? items : [items]);
+
+		return await this.inmation.runScript("/System", lua);
+
+	}
+
+	public async createAdvancedLuaScript(item:AdvancedLuaScript): Promise<any> {
+		console.log("createAdvancedLuaScript");
+		const lua = ` 
+		local scriptName = [[${item.name}]]
+		local path = [[${item.path}]]
+	   	local libName =  syslib.get(path ..".ScriptLibrary.LuaModuleName")
+	   	local scripts = syslib.getvalue(path .. ".ScriptLibrary.AdvancedLuaScript")
+	   
+	   	table.insert(libName, scriptName)
+	   	table.insert(scripts, [[${item.scriptBody}]])
+	   
+	   	syslib.set(path .. ".ScriptLibrary.LuaModuleName",libName )
+	   	syslib.set(path .. ".ScriptLibrary.AdvancedLuaScript",scripts )
+	   `;
+
+		return await this.inmation.runScript("/System", lua);
+	}
+
+
 
 
 

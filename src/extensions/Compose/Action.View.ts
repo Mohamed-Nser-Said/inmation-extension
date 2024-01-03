@@ -1,8 +1,9 @@
 import * as vscode from 'vscode';
-import { ActionDataProvider } from './DataProviders/ComposeActionDataProvider';
-import Inmation from '../Inmation/Inmation';
-import { MassAction } from '../Models/ComposeActions';
-import { ActionType } from '../Enums/ActionsPropType';
+import { ActionDataProvider } from './ComposeActionDataProvider';
+import Inmation from '../../Inmation/Inmation';
+import { MassAction } from '../../Models/ComposeActions';
+import { ActionType } from '../../Enums/ActionsPropType';
+import * as p from 'path';
 
 
 export namespace Action {
@@ -15,7 +16,7 @@ export namespace Action {
 
 
 
-	export function registerView() {
+	export function init() {
 
 		const compose = Inmation.Object.compose;
 		const dataProvider = new ActionDataProvider();
@@ -26,65 +27,19 @@ export namespace Action {
 			dataProvider.refresh();
 		});
 
-		vscode.commands.registerCommand(`${ViewId}.RenderModel`, (action) => {
+		vscode.commands.registerCommand(`${ViewId}.RenderModel`, async (action) => {
 			if (action.type === ActionType.Mass) {
 				const massAction = new MassAction(action.name, action.type, action.model, action.comment);
 
-				(async () => {
-					const objects = await massAction.readModelConfigFolder(compose.scriptReferences);
-					vscode.window.showTextDocument(vscode.Uri.parse(`untitled:${massAction.name}.json`), { viewColumn: vscode.ViewColumn.Beside }).then((editor) => {
-						editor.edit(editBuilder => {
-							editBuilder.insert(new vscode.Position(0, 0), JSON.stringify(objects, null, 2));
-						});
-			
-					});
-
-				})();
+				const doc = await massAction.readModelConfigFolder(Inmation.Object.compose.scriptReferences);
+				const editor = await vscode.workspace.openTextDocument({ content: JSON.stringify(doc, null, 2), language: 'json' });
+				await vscode.window.showTextDocument(editor, { preview: false });
 
 				
 			}
 
 		}
 		);
-
-		// 	if (action.type === ActionType.Mass) {
-		// 		const massAction = new MassAction(action.name, action.type, action.model, action.comment);
-
-		// 		(async () => {
-		// 			const objects = await massAction.readModelConfigFolder(compose.scriptReferences);
-		// 			const webview = vscode.window.createWebviewPanel(
-		// 				'compose',
-		// 				'Compose',
-		// 				vscode.ViewColumn.One,
-		// 				{
-		// 					enableScripts: true,
-		// 					retainContextWhenHidden: true,
-		// 				}
-		// 			);
-		// 			webview.webview.html = `
-		// 			<!DOCTYPE html>
-		// 			<html lang="en">
-		// 			<head>
-						
-		// 				<meta charset="UTF-8">
-		// 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		// 				<title>Compose</title>
-		// 				</head>
-		// 				<body>
-		// 				<h1>Compose</h1>
-		// 				<p>Compose</p>
-		// 				<pre>${JSON.stringify(objects, null, 2)}</pre>
-		// 				</body>
-		// 				</html>
-		// 				`;
-
-		// 		})();
-
-		// 		// this._webApi.runMassAction(massAction.model, massAction.comment);
-		// 	}
-
-		// }
-		// );
 
 		vscode.commands.registerCommand(`${ViewId}.RunAction`, async (action) => {
 			dataProvider.addRecent(action);

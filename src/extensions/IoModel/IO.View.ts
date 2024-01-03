@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as p from 'path';
-import  Inmation  from '../Inmation/Inmation';
+import  Inmation  from '../../Inmation/Inmation';
 
 
 export namespace Io {
@@ -22,8 +22,8 @@ export namespace Io {
 			) {
 				super(label, collapsibleState);
 				this.iconPath = {
-					light: p.join(__filename, '..', '..', '..', 'resources', 'light', `${type}.svg`),
-					dark: p.join(__filename, '..', '..', '..', 'resources', 'dark', `${type}.svg`)
+					light: p.join(__filename, '..', '..', '..','..','resources', 'light', `${type}.svg`),
+					dark: p.join(__filename, '..', '..','..','..', 'resources', 'dark', `${type}.svg`)
 				};
 
 				this.tooltip = `${this.label}-${this.type}`;
@@ -46,8 +46,7 @@ export namespace Io {
 
 		constructor() {
 
-
-			setTimeout(async () => Inmation.Object.isReady && this.refresh() , 1500);
+			Inmation.Object.onceReady().then(() => this.refresh());
 			this.refreshFunction = setInterval(async () =>Inmation.Object.isReady && this.refresh(), this.refreshRate);
 		}
 
@@ -133,7 +132,7 @@ export namespace Io {
 	}
 
 
-	export function registerView() {
+	export function init() {
 
 		const dataProvider = new IODataProvider();
 		vscode.window.registerTreeDataProvider(ioViewId, dataProvider);

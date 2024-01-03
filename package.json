@@ -1,9 +1,14 @@
 {
 	"name": "inmation-dev-tool",
-	"displayName": "Inmation IO",
-	"description": "View Inmation IO Model",
+	"displayName": "Inmation",
+	"description": "inmation dev tool for vscode",
 	"version": "0.0.1",
-	"publisher": "MS",
+	"author": {
+		"name": "mohamed said",
+		"email": ""
+	},
+
+	"publisher": "ms",
 	"repository": {
 		"type": "git"
 	},
@@ -20,7 +25,7 @@
 		"Other"
 	],
 	"activationEvents": [
-		"workspaceContains:filePattern('*inmation-compose.json')"
+		"onFileSystem:memfs"
 
 	],
 	"main": "./out/extension.js",
@@ -52,12 +57,7 @@
 		},
 		"views": {
 			"explorer": [
-				{
-					"type": "tree",
-					"id": "explorer:ScriptLibrary.View",
-					"name": "Script Libary",
-					"contextualTitle": "scripts libary"
-				}
+		
 			],
 			"Main": [
 				{
@@ -86,37 +86,15 @@
 		},
 		"commands": [
 			{
-				"command": "explorer:ScriptLibrary.View.Refresh",
-				"title": "Refresh IO Model",
+				"command": "InmationFs.Refresh",
+				"title": "Refresh",
 				"icon": {
 					"light": "resources/light/refresh.svg",
 					"dark": "resources/dark/refresh.svg"
 				}
+
 			},
-			{
-				"command": "explorer:ScriptLibrary.View.ScriptLibrary.New",
-				"title": "NewScript",
-				"icon": {
-					"light": "resources/light/add.svg",
-					"dark": "resources/dark/add.svg"
-				}
-			},
-			{
-				"command": "explorer:ScriptLibrary.View.Script.Edit",
-				"title": "Edit Script",
-				"icon": {
-					"light": "resources/light/edit.svg",
-					"dark": "resources/dark/edit.svg"
-				}
-			},
-			{
-				"command": "explorer:ScriptLibrary.View.Script.Delete",
-				"title": "Delete Script",
-				"icon": {
-					"light": "resources/light/delete.svg",
-					"dark": "resources/dark/delete.svg"
-				}
-			},
+
 
 			{
 				"command": "Compose:Action.View.RunAction",
@@ -194,10 +172,11 @@
 		"menus": {
 			"view/title": [
 				{
-					"command": "explorer:ScriptLibrary.View.Refresh",
-					"when": "view == explorer:ScriptLibrary.View",
+					"command": "InmationFs.Refresh",
 					"group": "navigation"
+
 				},
+			
 		
 				{
 					"command": "Main:Io.View.Refresh",
@@ -211,21 +190,7 @@
 				}
 			],
 			"view/item/context": [
-				{
-					"command": "explorer:ScriptLibrary.View.ScriptLibrary.New",
-					"when": "viewItem == explorer:ScriptLibrary.View.ScriptLibrary",
-					"group": "inline"
-				},
-				{
-					"command": "explorer:ScriptLibrary.View.Script.Edit",
-					"when": "viewItem == explorer:ScriptLibrary.View.Script",
-					"group": "inline"
-				},
-				{
-					"command": "explorer:ScriptLibrary.View.Script.Delete",
-					"when": "viewItem == explorer:ScriptLibrary.View.Script",
-					"group": "inline"
-				},
+				
 				{
 					"command": "Compose:Action.View.RenderModel",
 					"when": "viewItem == Compose:Actions.View.Mass",
@@ -274,6 +239,10 @@
 					"command": "Main:Io.View.Settings",
 					"group": "navigation"
 				}
+			],
+			"commandPalette": [
+		
+	
 			]
 		},
 		"configuration": []

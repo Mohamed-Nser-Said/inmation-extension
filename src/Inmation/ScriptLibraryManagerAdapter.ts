@@ -1,4 +1,4 @@
-import ScriptReference from "../types/ScriptReference";
+import ScriptReference from "../Models/ScriptReference";
 
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { ScriptLibraryManager } = require('@inmation/inmation-compose-cli/lib/script-library-manager.js');

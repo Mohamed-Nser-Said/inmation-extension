@@ -7,6 +7,7 @@ import { OutputChannel } from "./OutputChannel";
 import { InputChannel } from "./InputChannel";
 import { ComposeAction, ExecFuncAction, FlowAction, MassAction } from "../Models/ComposeActions";
 import * as vscode from 'vscode';
+import { promises } from "dns";
 
 
 
@@ -73,6 +74,17 @@ export class InmationObject {
 		await this.connect(connection);
 	}
 
+	public onceReady(): Promise<void> {
+		return new Promise((resolve, reject) => {
+			const interval = setInterval(() => {
+				if (this.webapi.isReady()) {
+					clearInterval(interval);
+					resolve();
+				}
+			}, 100);
+		});
+	}
+
 
 	public get isReady(): boolean {
 		return this.webapi.isReady();
@@ -135,6 +147,10 @@ export class InmationObject {
 		console.log(result);
 
 		return result;
+	}
+
+	public dispose(): void {
+		this.webapi.disconnect();
 	}
 
 }

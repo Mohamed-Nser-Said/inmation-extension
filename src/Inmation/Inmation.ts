@@ -4,7 +4,7 @@ import { Task } from "./Task";
 import { OutputChannel } from "./OutputChannel";
 import { InputChannel } from "./InputChannel";
 import * as vscode from 'vscode';
-import { NotebookClient } from "./NotebookClient";
+
 
 
 
@@ -12,7 +12,6 @@ class Inmation {
 
 	private static object: InmationObject;
 	private static task: Task;
-	private static notebook: NotebookClient;
 	public dev: boolean = true;
 
 	constructor() {
@@ -20,7 +19,7 @@ class Inmation {
 		const oc = new OutputChannel();
 		const ic = new InputChannel();
 		Inmation.object = new InmationObject(oc, ic);
-		Inmation.notebook = new NotebookClient(Inmation.object.webapi);
+
 
 		if (this.dev) {
 			const connection = Inmation.object.compose.connectionByName("docker WEBAPI-TAK");
@@ -69,12 +68,6 @@ class Inmation {
 		return Inmation.task;
 	}
 
-	get notebook() {
-
-		return Inmation.notebook;
-
-
-	}
 
 
 }

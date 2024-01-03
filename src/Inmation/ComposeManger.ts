@@ -5,7 +5,7 @@ import ScriptLibraryManagerAdapter from './ScriptLibraryManagerAdapter';
 import {ExecFuncAction, FlowAction, MassAction, ComposeAction} from '../Models/ComposeActions';
 import  Compose from '../Models/Compose';
 import {Connection} from '../Models/Connection';
-import ScriptReference from '../types/ScriptReference';
+import ScriptReference from '../Models/ScriptReference';
 import { ActionType } from '../Enums/ActionsPropType';
 import { error } from 'console';
 
@@ -32,15 +32,22 @@ export class ComposeManager {
 		this._scriptLibraryManager = new ScriptLibraryManagerAdapter(this._worksapcePath, this._compose.scriptReferences);
 	}
 
-	static get defaultWorkspacePath(): string {
+	public static get defaultWorkspacePath(): string {
+		if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 1){
+			for (const workspace of vscode.workspace.workspaceFolders){
+				if (fs.existsSync(path.join(workspace.uri.fsPath, 'inmation-compose.json'))){
+					return workspace.uri.fsPath;
+				}
+			}
+		}
 		return  vscode.workspace.workspaceFolders?.[0]?.uri.fsPath|| '';
 	}
 
-	get composePath(): string {
+	public get composePath(): string {
 		return  path.join( this._worksapcePath , 'inmation-compose.json');
 	}
 
-	get workspacePath(): string {
+	public get workspacePath(): string {
 		return this._worksapcePath;
 	}
 

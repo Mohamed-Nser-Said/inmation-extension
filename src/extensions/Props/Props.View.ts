@@ -72,7 +72,7 @@ export namespace Props {
 
 
 
-	export function registerView() {
+	export function init() {
 
 		// -->
 		const dataProvider = new DataProvider();
