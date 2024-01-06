@@ -46,8 +46,10 @@ export namespace Io {
 
 		constructor() {
 
-			Inmation.Object.onceReady().then(() => this.refresh());
-			this.refreshFunction = setInterval(async () =>Inmation.Object.isReady && this.refresh(), this.refreshRate);
+			Inmation.Object.onceRunScriptEnable(()=>{
+				this.refresh();
+				setInterval(async () => this.refresh(), this.refreshRate);
+			});
 		}
 
 

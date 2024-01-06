@@ -57,6 +57,7 @@ export default class WebApi  {
 		return this._client.wsConnectionInfo.state === 4 && this._client.wsConnectionInfo.authenticated;
 	}
 
+
 	public async runScript(ctx: string, script: string): Promise<any> {
 
 		const res = new Promise((resolve, reject) => {

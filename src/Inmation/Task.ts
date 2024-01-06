@@ -1,5 +1,6 @@
 import { AdvancedLuaScript } from "../Models/AdvancedLuaScript";
 import { MassAction } from "../Models/ComposeActions";
+import Inmation from "./Inmation";
 import { InmationObject } from "./InmationObject";
 
 export class Task {
@@ -87,8 +88,8 @@ export class Task {
 
 		const lua = `
 		
-local scriptLib = {}
-local function getChildren(path)
+			local scriptLib = {}
+			local function getChildren(path)
 			local obj = syslib.getobject(path)
 			local children = obj:children()
 			local  ok, value = pcall(function  () return syslib.getvalue(obj:path()) end)
@@ -129,7 +130,7 @@ local function getChildren(path)
 		
 		local json = require("dkjson")
 		local result = getChildren("/System")
-return json.encode(scriptLib);
+		return json.encode(scriptLib);
 
 `;
 
@@ -137,37 +138,6 @@ return json.encode(scriptLib);
 	}
 
 
-	public async enableRunScript() {
-
-		const model = {
-			"version": "1.0",
-			"objects": [
-				{
-					"path": "/WebAPIServer_WEBAPI-TAK_01",
-					"class": "WebAPIServer",
-					"ObjectName": "WebAPIServer_WEBAPI-TAK_01",
-					"ObjectDescription": "Web API Server",
-					"ContextPath": "/System/Core",
-					"RunScriptEnable": true
-
-				}
-			]
-		};
-
-
-
-		const mass = new MassAction(
-			"Enable Run Script",
-			"mass",
-			model,
-			null
-		);
-
-		return await this.inmation.mass(mass);
-
-
-	}
-	
 	public async loadAdvancedLuaScript(item: AdvancedLuaScript): Promise<AdvancedLuaScript> {
 		console.log("getAdvancedLuaScript");
 

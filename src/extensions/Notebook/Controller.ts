@@ -17,7 +17,7 @@ async function execute(code: string) {
 
 	];
 
-	return Inmation.Object.onceReady().then(
+	return Inmation.Object.onceRunScriptEnable(
 		() => Inmation.Object.runScript("/System", scriptSequence.join('\n'))
 		
 	);

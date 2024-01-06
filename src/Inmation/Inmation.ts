@@ -21,10 +21,13 @@ class Inmation {
 		Inmation.object = new InmationObject(oc, ic);
 
 
+
 		if (this.dev) {
 			const connection = Inmation.object.compose.connectionByName("docker WEBAPI-TAK");
 			Inmation.object.connect(connection);
 		}
+
+		
 
 		else {
 			Inmation.object.selectConnection();

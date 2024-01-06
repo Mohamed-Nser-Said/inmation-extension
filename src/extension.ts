@@ -13,8 +13,6 @@ import { InmationFs } from './extensions/InmationFs/init';
 
 export function activate(context: vscode.ExtensionContext) {
 
-	
-	
 	Io.init();
 	InmationFs.init(context);
 	// Props.init();

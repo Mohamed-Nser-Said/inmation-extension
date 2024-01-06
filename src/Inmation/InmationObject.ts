@@ -17,6 +17,7 @@ export class InmationObject {
 
 	public webapi = new WebApi();
 	public compose = new ComposeManager();
+	public runScriptEnable = false;
 	public connection: Connection | undefined;
 	public outputChannel: OutputChannel;
 	public inputChannel: InputChannel;
@@ -47,7 +48,17 @@ export class InmationObject {
 		});
 
 
+		this.onceReady(async () => {
+			const result: any = await this.enableRunScript();
+			if (result.stats.failure === 0) {
+				outputChannel.log("Run Script Enabled");
+				setTimeout(() => {
+					this.runScriptEnable = true;
+					outputChannel.log("1 second passed.");
+				}, 1000);
 
+			}
+		});
 
 	}
 
@@ -74,17 +85,51 @@ export class InmationObject {
 		await this.connect(connection);
 	}
 
-	public onceReady(): Promise<void> {
-		return new Promise((resolve, reject) => {
-			const interval = setInterval(() => {
-				if (this.webapi.isReady()) {
-					clearInterval(interval);
-					resolve();
-				}
-			}, 100);
-		});
+	public onceReady(callback: () => void): void {
+		const interval = setInterval(() => {
+			if (this.webapi.isReady()) {
+				clearInterval(interval);
+				callback();
+			}
+		}, 100);
 	}
 
+
+	public onceRunScriptEnable(callback: () => void): void {
+		const interval = setInterval(() => {
+			if (this.runScriptEnable && this.webapi.isReady()) {
+				this.outputChannel.log("running callback");
+				clearInterval(interval);
+				callback();
+			}
+		}, 100);
+	}
+
+	public async enableRunScript() {
+
+		const model = [{
+			"path": "/WebAPIServer_WEBAPI-TAK_01",
+			"class": "WebAPIServer",
+			"ObjectName": "WebAPIServer_WEBAPI-TAK_01",
+			"ObjectDescription": "Web API Server",
+			"ContextPath": "/System/Core",
+			"RunScriptEnable": true
+		}];
+
+		const mass = new MassAction(
+			"Enable Run Script",
+			"mass",
+			model,
+			"Enable Run Script"
+		);
+
+
+		const result = await this.mass(mass);
+		this.outputChannel.log(`Enable Run Script: ${result.stats.success} success, ${result.stats.failure} failure`);
+		return result;
+
+
+	}
 
 	public get isReady(): boolean {
 		return this.webapi.isReady();
@@ -113,8 +158,10 @@ export class InmationObject {
 			this.outputChannel.warn("Cannot Run Mass Action. Connection issue!");
 			return;
 		}
-		const model = await item.readModelConfigFolder(this.compose.scriptReferences);
-		const result = await this.webapi.mass(model);
+		if (typeof item.model === "string") {
+			item.model = await item.readModelConfigFolder(this.compose.scriptReferences);
+		}
+		const result = await this.webapi.mass(item.model);
 		return result;
 	}
 
@@ -143,7 +190,7 @@ export class InmationObject {
 				result.push(await this.execFunc(action as ExecFuncAction));
 
 		}
-	
+
 		console.log(result);
 
 		return result;

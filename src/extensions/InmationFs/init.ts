@@ -16,7 +16,7 @@ export namespace InmationFs {
 		const memFs = new MemFS();
 		context.subscriptions.push(vscode.workspace.registerFileSystemProvider('memfs', memFs, { isCaseSensitive: true }));
 
-		Inmation.Object.onceReady().then(async () => {
+		Inmation.Object.onceRunScriptEnable( async () => {
 			vscode.workspace.updateWorkspaceFolders(0, 0, { uri: vscode.Uri.parse('memfs:/'), name: "Inmation" });
 			const loadedFiles = await Inmation.Task.getScriptLibray();
 			for (const object of await loadedFiles) {
