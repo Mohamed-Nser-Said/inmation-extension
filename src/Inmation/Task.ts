@@ -10,7 +10,7 @@ export class Task {
 	}
 
 
-	async addObject(parentPath: string, objName: string, objClass: string): Promise<any> {
+	public async addObject(parentPath: string, objName: string, objClass: string): Promise<any> {
 
 		const lua = `
 						obj = syslib.createobject("${parentPath}", "${objClass}")
@@ -32,7 +32,7 @@ export class Task {
 
 
 
-	async getFullIoTree(): Promise<any> {
+	public async getFullIoTree(): Promise<any> {
 		console.log("getFullIoTree");
 
 		const getChildrenLua = `
@@ -82,7 +82,7 @@ export class Task {
 	}
 
 
-	async getScriptLibray(): Promise<any> {
+	public async getScriptLibray(): Promise<any> {
 		console.log("getScriptLibray");
 
 		const lua = `
@@ -137,7 +137,38 @@ return json.encode(scriptLib);
 	}
 
 
-	async loadAdvancedLuaScript(item: AdvancedLuaScript): Promise<AdvancedLuaScript> {
+	public async enableRunScript() {
+
+		const model = {
+			"version": "1.0",
+			"objects": [
+				{
+					"path": "/WebAPIServer_WEBAPI-TAK_01",
+					"class": "WebAPIServer",
+					"ObjectName": "WebAPIServer_WEBAPI-TAK_01",
+					"ObjectDescription": "Web API Server",
+					"ContextPath": "/System/Core",
+					"RunScriptEnable": true
+
+				}
+			]
+		};
+
+
+
+		const mass = new MassAction(
+			"Enable Run Script",
+			"mass",
+			model,
+			null
+		);
+
+		return await this.inmation.mass(mass);
+
+
+	}
+	
+	public async loadAdvancedLuaScript(item: AdvancedLuaScript): Promise<AdvancedLuaScript> {
 		console.log("getAdvancedLuaScript");
 
 		const lua = ` 
@@ -242,7 +273,7 @@ return json.encode(scriptLib);
 
 	}
 
-	public async createAdvancedLuaScript(item:AdvancedLuaScript): Promise<any> {
+	public async createAdvancedLuaScript(item: AdvancedLuaScript): Promise<any> {
 		console.log("createAdvancedLuaScript");
 		const lua = ` 
 		local scriptName = [[${item.name}]]
