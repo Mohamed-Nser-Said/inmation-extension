@@ -41,6 +41,7 @@ export namespace InmationFs {
 			}
 		});
 
+
 		vscode.workspace.onDidOpenTextDocument(async e => {
 			if (e.uri.scheme === 'memfs') {
 				// remove .lua from filename
