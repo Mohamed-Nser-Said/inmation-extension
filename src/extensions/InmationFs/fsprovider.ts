@@ -6,6 +6,7 @@
 
 import * as path from 'path';
 import * as vscode from 'vscode';
+import { FsMirror } from './FsMirror';
 
 export class File implements vscode.FileStat {
 
@@ -51,6 +52,11 @@ export type Entry = File | Directory;
 export class MemFS implements vscode.FileSystemProvider {
 
 	root = new Directory('');
+	mirror: FsMirror;
+
+	constructor() {
+		this.mirror = new FsMirror();
+	}
 
 	// --- manage file metadata
 
@@ -142,12 +148,16 @@ export class MemFS implements vscode.FileSystemProvider {
 	createDirectory(uri: vscode.Uri): void {
 		const basename = path.posix.basename(uri.path);
 		const dirname = uri.with({ path: path.posix.dirname(uri.path) });
+
+		console.log(dirname, basename);
 		const parent = this._lookupAsDirectory(dirname, false);
 
 		const entry = new Directory(basename);
 		parent.entries.set(entry.name, entry);
 		parent.mtime = Date.now();
 		parent.size += 1;
+		this.mirror.createDirectory(dirname.path, basename);
+		// console.log(uri);
 		this._fireSoon({ type: vscode.FileChangeType.Changed, uri: dirname }, { type: vscode.FileChangeType.Created, uri });
 	}
 

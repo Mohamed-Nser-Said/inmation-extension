@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as p from 'path';
-import  Inmation  from '../../Inmation/Inmation';
+import Inmation from '../../Inmation/Inmation';
 
 
 export namespace Io {
@@ -22,8 +22,8 @@ export namespace Io {
 			) {
 				super(label, collapsibleState);
 				this.iconPath = {
-					light: p.join(__filename, '..', '..', '..','..','resources', 'light', `${type}.svg`),
-					dark: p.join(__filename, '..', '..','..','..', 'resources', 'dark', `${type}.svg`)
+					light: p.join(__filename, '..', '..', '..', '..', 'resources', 'light', `${type}.svg`),
+					dark: p.join(__filename, '..', '..', '..', '..', 'resources', 'dark', `${type}.svg`)
 				};
 
 				this.tooltip = `${this.label}-${this.type}`;
@@ -46,7 +46,7 @@ export namespace Io {
 
 		constructor() {
 
-			Inmation.Object.onceRunScriptEnable(()=>{
+			Inmation.Object.onceRunScriptEnable(() => {
 				this.refresh();
 				setInterval(async () => this.refresh(), this.refreshRate);
 			});
@@ -59,18 +59,20 @@ export namespace Io {
 			clearInterval(this.refreshFunction);
 
 			if (this.refreshRate == -1) return;
-			this.refreshFunction = setInterval(async () =>Inmation.Object.isReady && this.refresh(), this.refreshRate);
+			this.refreshFunction = setInterval(async () => Inmation.Object.isReady && this.refresh(), this.refreshRate);
 		}
 
 		async refresh(): Promise<void> {
 
-			const tree = await Inmation.Task.getFullIoTree();
+			Inmation.Object.onceRunScriptEnable(async () => {
+				const tree = await Inmation.Task.getFullIoTree();
 
-			if (!tree) {
-				return;
-			}
-			this.inmNode = new Model.IoObject(tree.label, tree.type, tree.value, tree.path, tree.children, vscode.TreeItemCollapsibleState.Collapsed);
-			this._onDidChangeTreeData.fire();
+				if (!tree) {
+					return;
+				}
+				this.inmNode = new Model.IoObject(tree.label, tree.type, tree.value, tree.path, tree.children, vscode.TreeItemCollapsibleState.Collapsed);
+				this._onDidChangeTreeData.fire();
+			});
 
 		}
 

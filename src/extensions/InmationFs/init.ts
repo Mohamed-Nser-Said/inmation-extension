@@ -16,7 +16,10 @@ export namespace InmationFs {
 		const memFs = new MemFS();
 		context.subscriptions.push(vscode.workspace.registerFileSystemProvider('memfs', memFs, { isCaseSensitive: true }));
 
-		Inmation.Object.onceRunScriptEnable( async () => {
+		memFs.watch(vscode.Uri.parse('memfs:/'));
+
+
+		Inmation.Object.onceRunScriptEnable(async () => {
 			vscode.workspace.updateWorkspaceFolders(0, 0, { uri: vscode.Uri.parse('memfs:/'), name: "Inmation" });
 			const loadedFiles = await Inmation.Task.getScriptLibray();
 			for (const object of await loadedFiles) {
@@ -26,19 +29,21 @@ export namespace InmationFs {
 					memFs.writeFile(uri, Buffer.from(file), { create: true, overwrite: true });
 				}
 			}
-
+			memFs.mirror.sync = true;
 
 		});
 
-		vscode.commands.registerCommand("InmationFs.Refresh", async () => {
-			const loadedFiles = await Inmation.Task.getScriptLibray();
-			for (const object of await loadedFiles) {
-				memFs.createDirectory(vscode.Uri.parse(`memfs:${object.path}/`));
-				for (const file of await object.scriptLibrary) {
-					const uri = vscode.Uri.parse(`memfs:${object.path}/${file}.lua`);
-					memFs.writeFile(uri, Buffer.from(file), { create: true, overwrite: true });
+		vscode.commands.registerCommand("InmationFs.Refresh", () => {
+			Inmation.Object.onceRunScriptEnable(async () => {
+				const loadedFiles = await Inmation.Task.getScriptLibray();
+				for (const object of await loadedFiles) {
+					memFs.createDirectory(vscode.Uri.parse(`memfs:${object.path}/`));
+					for (const file of await object.scriptLibrary) {
+						const uri = vscode.Uri.parse(`memfs:${object.path}/${file}.lua`);
+						memFs.writeFile(uri, Buffer.from(file), { create: true, overwrite: true });
+					}
 				}
-			}
+			});
 		});
 
 
@@ -48,9 +53,9 @@ export namespace InmationFs {
 				const filename = e.uri.path.split("/").pop()?.split(".")[0] ?? "";
 				const path = e.uri.path.split("/").slice(0, -1).join("/");
 
-				const item = await Inmation.Task.loadAdvancedLuaScript({path:path, name:filename});
+				const item = await Inmation.Task.loadAdvancedLuaScript({ path: path, name: filename });
 
-				memFs.writeFile(e.uri, Buffer.from(item.scriptBody??"--"), { create: true, overwrite: true });
+				memFs.writeFile(e.uri, Buffer.from(item.scriptBody ?? "--"), { create: true, overwrite: true });
 
 			}
 		});
@@ -61,12 +66,13 @@ export namespace InmationFs {
 				if (file.scheme === 'memfs') {
 					const filename = file.path.split("/").pop()?.split(".")[0] ?? "";
 					const path = file.path.split("/").slice(0, -1).join("/");
-					const script = await Inmation.Task.createAdvancedLuaScript({path:path, name:filename, scriptBody:"-- empty"});
+					const script = await Inmation.Task.createAdvancedLuaScript({ path: path, name: filename, scriptBody: "-- empty" });
 					memFs.writeFile(file, Buffer.from(script), { create: true, overwrite: true });
 					vscode.window.showInformationMessage("Created");
 				}
 			}
 		});
+
 
 
 		vscode.workspace.onDidRenameFiles(async e => {

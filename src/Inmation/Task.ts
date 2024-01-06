@@ -1,5 +1,8 @@
+import { ActionType } from "../Enums/ActionsPropType";
+import { IoClasses } from "../Enums/ClassTypes";
 import { AdvancedLuaScript } from "../Models/AdvancedLuaScript";
-import { MassAction } from "../Models/ComposeActions";
+import { Action, MassAction } from "../Models/ComposeActions";
+import { ActionDataProvider } from "../extensions/Compose/ComposeActionDataProvider";
 import Inmation from "./Inmation";
 import { InmationObject } from "./InmationObject";
 
@@ -137,6 +140,16 @@ export class Task {
 		return await this.inmation.runScript("/System", lua);
 	}
 
+	public async createGenFolder(name:string, path:string): Promise<any> {
+		console.log("createGenFolder");
+
+		const lua = `
+		local obj = syslib.createobject("${path}", "${IoClasses.MODEL_CLASS_GENFOLDER}")
+		obj.ObjectName = "${name}"
+		obj:commit()`;
+
+		return await this.inmation.runScript("/System", lua);
+	}
 
 	public async loadAdvancedLuaScript(item: AdvancedLuaScript): Promise<AdvancedLuaScript> {
 		console.log("getAdvancedLuaScript");
