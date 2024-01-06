@@ -72,22 +72,23 @@
 					"icon": "media/io.svg",
 					"type": "tree",
 					"contextualTitle": "object Properites"
-				}
-			],
-	
-			"Compose": [
+				},
 				{
 					"id": "Compose:Action.View",
 					"name": "inmation compose actions",
 					"icon": "media/io.svg",
 					"contextualTitle": "Compose"
 				}
+			],
+	
+			"Compose": [
+				
 			]
 		},
 		"commands": [
 			{
 				"command": "InmationFs.Refresh",
-				"title": "Refresh",
+				"title": "Refresh Library",
 				"icon": {
 					"light": "resources/light/refresh.svg",
 					"dark": "resources/dark/refresh.svg"
@@ -173,6 +174,7 @@
 			"view/title": [
 				{
 					"command": "InmationFs.Refresh",
+					"when": "explorerViewletVisible",
 					"group": "navigation"
 
 				},
@@ -230,15 +232,7 @@
 				
 			],
 			"editor/title": [
-				{
-					"command": "Main:Io.View.Refresh",
-					"when": "editorLangId == a",
-					"group": "navigation"
-				},
-				{
-					"command": "Main:Io.View.Settings",
-					"group": "navigation"
-				}
+		
 			],
 			"commandPalette": [
 		
