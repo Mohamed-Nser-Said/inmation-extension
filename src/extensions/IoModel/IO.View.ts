@@ -78,7 +78,7 @@ export namespace Io {
 
 		public async showObject(item: any): Promise<any> {
 
-			const scriptLibray = await Inmation.Task.getScriptLibray();
+			const scriptLibray = await Inmation.Task.pullScriptLibray();
 			vscode.window.showInformationMessage(scriptLibray?.join(', '));
 			this.refresh();
 

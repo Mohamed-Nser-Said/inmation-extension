@@ -28,11 +28,20 @@ export class FsMirror {
 		console.log("delete", uri);
 	}
 
-	createDirectory(parent:string, name:string): void {
-		if (!this.sync) return;
-		Inmation.Object.onceRunScriptEnable(async () => {
-			Inmation.Task.createGenFolder(name, parent);
-		});
+	createDirectory(parent:string, name:string): boolean|null {
+		if (!this.sync) return null;
+		// console.log("createDirectory", parent, name);
+		try{
+			Inmation.Object.onceRunScriptEnable(async () => {
+			await Inmation.Task.createGenFolder(name, parent);
+			return true;
+		});}
+		catch(e:any){
+			vscode.window.showErrorMessage(e.message);
+			return false;
+		}
+
+		return null;
 		
 	}
 

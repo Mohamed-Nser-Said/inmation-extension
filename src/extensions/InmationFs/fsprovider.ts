@@ -7,6 +7,7 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { FsMirror } from './FsMirror';
+import Inmation from '../../Inmation/Inmation';
 
 export class File implements vscode.FileStat {
 
@@ -56,6 +57,7 @@ export class MemFS implements vscode.FileSystemProvider {
 
 	constructor() {
 		this.mirror = new FsMirror();
+		
 	}
 
 	// --- manage file metadata
@@ -145,20 +147,54 @@ export class MemFS implements vscode.FileSystemProvider {
 		this._fireSoon({ type: vscode.FileChangeType.Changed, uri: dirname }, { uri, type: vscode.FileChangeType.Deleted });
 	}
 
+
+	async pullScriptLibrary() {
+		const loadedFiles = await Inmation.Task.pullScriptLibray();
+		for (const object of await loadedFiles) {
+			const uri = vscode.Uri.parse(`memfs:${object.path}/`);
+			this._createDirectory(uri);
+			for (const file of await object.scriptLibrary) {
+				const uri = vscode.Uri.parse(`memfs:${object.path}/${file}.lua`);
+				this.writeFile(uri, Buffer.from(file), { create: true, overwrite: true });
+			}
+		}
+
+	}
+
 	createDirectory(uri: vscode.Uri): void {
+
 		const basename = path.posix.basename(uri.path);
 		const dirname = uri.with({ path: path.posix.dirname(uri.path) });
 
-		console.log(dirname, basename);
-		const parent = this._lookupAsDirectory(dirname, false);
+		
 
+		const parent = this._lookupAsDirectory(dirname, false);
 		const entry = new Directory(basename);
 		parent.entries.set(entry.name, entry);
 		parent.mtime = Date.now();
 		parent.size += 1;
-		this.mirror.createDirectory(dirname.path, basename);
-		// console.log(uri);
+
 		this._fireSoon({ type: vscode.FileChangeType.Changed, uri: dirname }, { type: vscode.FileChangeType.Created, uri });
+		try {
+			Inmation.Task.createGenFolder(basename, dirname.path);
+		} catch (e: any) {
+			vscode.window.showErrorMessage(e.message);
+			setTimeout(() => {
+				this.delete(uri);
+			}, 1000);
+			return;
+		}
+	}
+
+	_createDirectory(uri: vscode.Uri): void {
+		const basename = path.posix.basename(uri.path);
+		const dirname = uri.with({ path: path.posix.dirname(uri.path) });
+
+		const parent = this._lookupAsDirectory(dirname, false);
+		const entry = new Directory(basename);
+		parent.entries.set(entry.name, entry);
+		parent.mtime = Date.now();
+		parent.size += 1;
 	}
 
 	// --- lookup

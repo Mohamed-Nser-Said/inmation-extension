@@ -9,6 +9,8 @@ import { Notebook } from './extensions/Notebook/init';
 import { InmationFs } from './extensions/InmationFs/init';
 
 
+// eslint-disable-next-line no-var
+
 
 
 export function activate(context: vscode.ExtensionContext) {

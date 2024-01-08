@@ -16,33 +16,15 @@ export namespace InmationFs {
 		const memFs = new MemFS();
 		context.subscriptions.push(vscode.workspace.registerFileSystemProvider('memfs', memFs, { isCaseSensitive: true }));
 
-		memFs.watch(vscode.Uri.parse('memfs:/'));
-
 
 		Inmation.Object.onceRunScriptEnable(async () => {
 			vscode.workspace.updateWorkspaceFolders(0, 0, { uri: vscode.Uri.parse('memfs:/'), name: "Inmation" });
-			const loadedFiles = await Inmation.Task.getScriptLibray();
-			for (const object of await loadedFiles) {
-				memFs.createDirectory(vscode.Uri.parse(`memfs:${object.path}/`));
-				for (const file of await object.scriptLibrary) {
-					const uri = vscode.Uri.parse(`memfs:${object.path}/${file}.lua`);
-					memFs.writeFile(uri, Buffer.from(file), { create: true, overwrite: true });
-				}
-			}
-			memFs.mirror.sync = true;
-
+			await memFs.pullScriptLibrary();
 		});
 
 		vscode.commands.registerCommand("InmationFs.Refresh", () => {
 			Inmation.Object.onceRunScriptEnable(async () => {
-				const loadedFiles = await Inmation.Task.getScriptLibray();
-				for (const object of await loadedFiles) {
-					memFs.createDirectory(vscode.Uri.parse(`memfs:${object.path}/`));
-					for (const file of await object.scriptLibrary) {
-						const uri = vscode.Uri.parse(`memfs:${object.path}/${file}.lua`);
-						memFs.writeFile(uri, Buffer.from(file), { create: true, overwrite: true });
-					}
-				}
+				await memFs.pullScriptLibrary();
 			});
 		});
 

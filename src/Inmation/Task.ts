@@ -5,7 +5,7 @@ import { Action, MassAction } from "../Models/ComposeActions";
 import { ActionDataProvider } from "../extensions/Compose/ComposeActionDataProvider";
 import Inmation from "./Inmation";
 import { InmationObject } from "./InmationObject";
-
+import * as vscode from 'vscode';
 export class Task {
 
 	private inmation: InmationObject;
@@ -86,7 +86,7 @@ export class Task {
 	}
 
 
-	public async getScriptLibray(): Promise<any> {
+	public async pullScriptLibray(): Promise<any> {
 		console.log("getScriptLibray");
 
 		const lua = `
@@ -140,8 +140,12 @@ export class Task {
 		return await this.inmation.runScript("/System", lua);
 	}
 
-	public async createGenFolder(name:string, path:string): Promise<any> {
-		console.log("createGenFolder");
+	public async createGenFolder(name: string, path: string): Promise<any> {
+
+		if (path === "/System") { 
+			vscode.window.showErrorMessage("Can't create folder in /System"); 
+			return;
+		}
 
 		const lua = `
 		local obj = syslib.createobject("${path}", "${IoClasses.MODEL_CLASS_GENFOLDER}")
@@ -149,6 +153,7 @@ export class Task {
 		obj:commit()`;
 
 		return await this.inmation.runScript("/System", lua);
+
 	}
 
 	public async loadAdvancedLuaScript(item: AdvancedLuaScript): Promise<AdvancedLuaScript> {
